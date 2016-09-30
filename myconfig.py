@@ -1,0 +1,6 @@
+bedFolder="/groups/price/farhad/Data/GTEx/v6/95Causal/bed/"
+LDSCPath="/home/fh80/Code/LDSC/ldsc/"
+annotationsName="eQTL_CAVIAR"
+annotationsFolder="/groups/price/farhad/Data/Annotations/"
+outFolder="/groups/price/farhad/Results/LDSC_eQTL_GTEx_CAVIAR_23andMe/"
+summaryFolder="/groups/price/farhad/Data/SummaryStatistics/23andMe/"
