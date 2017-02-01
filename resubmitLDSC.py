@@ -19,7 +19,7 @@ TEMPLATE_SERIAL = """
 #####################################
 #!/bin/bash
 #BSUB -n 1                #each  job run on 1 core
-#BSUB -W 03:00            #job run 5 hour
+#BSUB -W 01:00            #job run 5 hour
 #BSUB -J {name}
 #BSUB -o {logfile}        #lsf output file
 #BSUB -e {errfile}        #lsf error file
@@ -40,23 +40,19 @@ for bedFiles in glob.glob(bedFolder + "/*.bed"):
 	bedFile = bedFiles.replace(bedFolder,"").replace(".bed","");
 	print bedFile;
 	script = "";
-	for sumFiles in glob.glob(summaryFolder+"/*.sumstats"):
+	scriptfile = currentPath + "/qsub/submitLDSC_"+ bedFile;
+        logfile    = currentPath + "/log/submitLDSC"+ bedFile + ".log";
+        errfile    = currentPath + "/err/submitLDSC"+ bedFile + ".err";
+	for sumFiles in glob.glob(summaryFolder+"/*"):
 		sumFile = sumFiles.replace(summaryFolder,"").replace(".sumstats","");
 		print sumFile;
-	
 		if os.path.exists(outFolder +  "/" + annotationsName + "/" + bedFile + "/" + sumFile + ".results"):
-			continue;
-		else:
-			print outFolder +  "/" + annotationsName + "/" + bedFile + "/" + sumFile + ".results";
-			
-		scriptfile = currentPath + "/qsub/submitLDSC_"+ bedFile + "_"+ sumFile;
-        	logfile    = currentPath + "/log/submitLDSC"+ bedFile + "_" + sumFile + ".log";
-        	errfile    = currentPath + "/err/submitLDSC"+ bedFile + "_" + sumFile +   ".err";
+                	continue;
 		if not os.path.exists(outFolder + "/" + annotationsName):
 			os.makedirs(outFolder + "/" + annotationsName);
 		if not os.path.exists(outFolder + "/" + annotationsName + "/" + bedFile):
                         os.makedirs(outFolder + "/" + annotationsName + "/" + bedFile);	
-		script =  "python " + LDSCPath + "ldsc.py" +\
+		script = "python " + LDSCPath + "ldsc.py" +\
 			" --h2 " + sumFiles +\
 			" --ref-ld-chr /groups/price/ldsc/reference_files/1000G_EUR_Phase3/baseline/baseline.," + annotationsFolder + "/" + annotationsName + "/" + bedFile+"/"+bedFile+"."+\
 			" --frqfile-chr /groups/price/ldsc/reference_files/1000G_EUR_Phase3/plink_files/1000G.EUR.QC." +\
@@ -69,4 +65,3 @@ for bedFiles in glob.glob(bedFolder + "/*.bed"):
 		scriptFILEHandler.write(TEMPLATE_SERIAL.format(script=script, name="LDSC", logfile=logfile, errfile=errfile, slots=1))
 		scriptFILEHandler.close();
 		subprocess.call('bsub < ' + scriptfile + '.qsub', shell=True);
-		

@@ -1,7 +1,7 @@
 import os
 import glob
 import subprocess
-from myconfig import *
+from myconfigLD import *
 from subprocess import Popen, PIPE
 
 
@@ -20,6 +20,7 @@ TEMPLATE_SERIAL = """
 #!/bin/bash
 #BSUB -n 1                #each  job run on 1 core
 #BSUB -W 03:00            #job run 5 hour
+#BSUB -R "rusage[mem=10000]" 
 #BSUB -J {name}
 #BSUB -o {logfile}        #lsf output file
 #BSUB -e {errfile}        #lsf error file
@@ -58,7 +59,7 @@ for bedFiles in glob.glob(bedFolder + "/*.bed"):
                         os.makedirs(outFolder + "/" + annotationsName + "/" + bedFile);	
 		script =  "python " + LDSCPath + "ldsc.py" +\
 			" --h2 " + sumFiles +\
-			" --ref-ld-chr /groups/price/ldsc/reference_files/1000G_EUR_Phase3/baseline/baseline.," + annotationsFolder + "/" + annotationsName + "/" + bedFile+"/"+bedFile+"."+\
+			" --ref-ld-chr /groups/price/ldsc/reference_files/1000G_EUR_Phase3/baselineLD/baselineLD.," + annotationsFolder + "/" + annotationsName + "/" + bedFile+"/"+bedFile+"."+\
 			" --frqfile-chr /groups/price/ldsc/reference_files/1000G_EUR_Phase3/plink_files/1000G.EUR.QC." +\
 			" --w-ld-chr /groups/price/ldsc/reference_files/1000G_EUR_Phase3/weights/weights.hm3_noMHC." +\
 			" --overlap-annot --print-cov --print-coefficients --print-delete-vals " +\
